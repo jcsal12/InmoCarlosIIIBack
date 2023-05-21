@@ -9,7 +9,7 @@ import java.util.List;
 
 
 @Entity
-@Data
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "usuarios")
@@ -17,23 +17,16 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Integer id;
+    private Long id;
     @Column
     private  String nombre;
     @Column
-    private String apellidos;
-    @Column
-    private String DNI;
-    @Column
     private String email;
-    @Column
-    private String usuario;
     @Column
     private String clave;
     @Column
     private String telefono;
-    @Column
-    private String direccion;
+
 
     //Relaciones
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)

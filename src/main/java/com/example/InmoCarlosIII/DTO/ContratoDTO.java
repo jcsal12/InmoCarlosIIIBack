@@ -9,6 +9,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class ContratoDTO {
 
+    private Long id;
+
     private String tipo;
 
     private Date fechaInicio;

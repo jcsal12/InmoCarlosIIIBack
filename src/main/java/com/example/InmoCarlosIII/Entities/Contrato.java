@@ -16,7 +16,7 @@ public class Contrato {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     @Column
     private String tipo;
     @Column

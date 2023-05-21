@@ -2,90 +2,46 @@ package com.example.InmoCarlosIII.Services;
 
 import com.example.InmoCarlosIII.DTO.PropiedadDTO;
 import com.example.InmoCarlosIII.Entities.Propiedad;
+import com.example.InmoCarlosIII.Mapper.PropiedadMapper;
 import com.example.InmoCarlosIII.Repositories.PropiedadRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class PropiedadService {
 
     @Autowired
     private PropiedadRepository propiedadRepository;
 
-    public List<PropiedadDTO> listarPropiedades(){
-        return propiedadRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
+    @Autowired
+    private PropiedadMapper propiedadMapper;
+
+    public PropiedadDTO createPropiedad(PropiedadDTO propiedadDTO) {
+        Propiedad propiedad = propiedadMapper.toEntity(propiedadDTO);
+        Propiedad savedPropiedad = propiedadRepository.save(propiedad);
+        return propiedadMapper.toDTO(savedPropiedad);
     }
 
-    public PropiedadDTO listarPropiedadPorId(Integer id){
-        Propiedad propiedad = propiedadRepository.findById(id).orElse(null);
-        return propiedad != null ? convertToDto(propiedad) : null;
+    public List<PropiedadDTO> getAllPropiedades() {
+        return propiedadRepository.findAll().stream()
+                .map(propiedadMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public PropiedadDTO crearPropiedad(PropiedadDTO propiedadDto){
-        Propiedad propiedad = convertToEntity(propiedadDto);
-        return convertToDto(propiedadRepository.save(propiedad));
+    public PropiedadDTO getPropiedadById(Integer id) {
+        return propiedadMapper.toDTO(propiedadRepository.findById(id).orElse(null));
     }
 
-    public void borrarPropiedad(Integer id){
+    public PropiedadDTO updatePropiedad(PropiedadDTO propiedadDTO) {
+        Propiedad propiedad = propiedadMapper.toEntity(propiedadDTO);
+        Propiedad updatedPropiedad = propiedadRepository.save(propiedad);
+        return propiedadMapper.toDTO(updatedPropiedad);
+    }
+
+    public void deletePropiedad(Integer id) {
         propiedadRepository.deleteById(id);
     }
-
-    public Optional<PropiedadDTO> actualizarPropiedad(Integer id, PropiedadDTO propiedadDto) {
-        Optional<Propiedad> propiedadExistente = propiedadRepository.findById(id);
-        if (propiedadExistente.isPresent()) {
-            Propiedad propiedad = propiedadExistente.get();
-            propiedad.setProvincia(propiedadDto.getProvincia());
-            propiedad.setMunicipio(propiedadDto.getMunicipio());
-            propiedad.setDireccion(propiedadDto.getDireccion());
-            propiedad.setPrecio(propiedadDto.getPrecio());
-            propiedad.setTipo(propiedadDto.getTipo());
-            propiedad.setHabitaciones(propiedadDto.getHabitaciones());
-            propiedad.setBanyos(propiedadDto.getBanyos());
-            propiedad.setSuperficie(propiedadDto.getSuperficie());
-            propiedad.setEstado(propiedadDto.getEstado());
-            propiedad.setImagenes(propiedadDto.getImagenes());
-            Propiedad propiedadActualizada = propiedadRepository.save(propiedad);
-            return Optional.of(convertToDto(propiedadActualizada));
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    private PropiedadDTO convertToDto(Propiedad propiedad) {
-        PropiedadDTO propiedadDto = new PropiedadDTO();
-        propiedadDto.setProvincia(propiedad.getProvincia());
-        propiedadDto.setMunicipio(propiedad.getMunicipio());
-        propiedadDto.setDireccion(propiedad.getDireccion());
-        propiedadDto.setPrecio(propiedad.getPrecio());
-        propiedadDto.setTipo(propiedad.getTipo());
-        propiedadDto.setHabitaciones(propiedad.getHabitaciones());
-        propiedadDto.setBanyos(propiedad.getBanyos());
-        propiedadDto.setSuperficie(propiedad.getSuperficie());
-        propiedadDto.setEstado(propiedad.getEstado());
-        propiedadDto.setImagenes(propiedad.getImagenes());
-        return propiedadDto;
-    }
-
-    private Propiedad convertToEntity(PropiedadDTO propiedadDto) {
-        Propiedad propiedad = new Propiedad();
-        propiedad.setProvincia(propiedadDto.getProvincia());
-        propiedad.setMunicipio(propiedadDto.getMunicipio());
-        propiedad.setDireccion(propiedadDto.getDireccion());
-        propiedad.setPrecio(propiedadDto.getPrecio());
-        propiedad.setTipo(propiedadDto.getTipo());
-        propiedad.setHabitaciones(propiedadDto.getHabitaciones());
-        propiedad.setBanyos(propiedadDto.getBanyos());
-        propiedad.setSuperficie(propiedadDto.getSuperficie());
-        propiedad.setEstado(propiedadDto.getEstado());
-        propiedad.setImagenes(propiedadDto.getImagenes());
-        return propiedad;
-    }
-
 }

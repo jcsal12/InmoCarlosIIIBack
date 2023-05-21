@@ -1,6 +1,5 @@
 package com.example.InmoCarlosIII.DTO;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PropiedadDTO {
+
+    private Long id;
 
     private String provincia;
 
@@ -29,4 +30,6 @@ public class PropiedadDTO {
     private String estado;
 
     private String imagenes;
+
+    private String descripcion;
 }

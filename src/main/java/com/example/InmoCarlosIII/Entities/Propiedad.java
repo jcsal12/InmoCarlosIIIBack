@@ -13,7 +13,7 @@ public class Propiedad {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     @Column
     private String provincia;
     @Column
@@ -34,6 +34,8 @@ public class Propiedad {
     private String estado;
     @Column
     private String imagenes;
+    @Column
+    private String descripcion;
 
 
     //Relaciones
