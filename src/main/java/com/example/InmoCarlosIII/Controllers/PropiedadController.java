@@ -1,9 +1,9 @@
 package com.example.InmoCarlosIII.Controllers;
 
+
 import com.example.InmoCarlosIII.DTO.PropiedadDTO;
 import com.example.InmoCarlosIII.Services.PropiedadService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,35 +16,45 @@ public class PropiedadController {
     @Autowired
     private PropiedadService propiedadService;
 
-    @PostMapping
-    public ResponseEntity<PropiedadDTO> createPropiedad(@RequestBody PropiedadDTO propiedadDTO) {
-        PropiedadDTO createdPropiedad = propiedadService.createPropiedad(propiedadDTO);
-        return new ResponseEntity<>(createdPropiedad, HttpStatus.CREATED);
+    @GetMapping("/{id}")
+    public ResponseEntity<PropiedadDTO> getPropiedad(@PathVariable Long id) {
+        try {
+            PropiedadDTO propiedadDTO = propiedadService.getPropiedad(id);
+            return ResponseEntity.ok(propiedadDTO);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
-
     @GetMapping
     public ResponseEntity<List<PropiedadDTO>> getAllPropiedades() {
         List<PropiedadDTO> propiedades = propiedadService.getAllPropiedades();
-        return new ResponseEntity<>(propiedades, HttpStatus.OK);
+        return ResponseEntity.ok(propiedades);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PropiedadDTO> getPropiedadById(@PathVariable Integer id) {
-        PropiedadDTO propiedad = propiedadService.getPropiedadById(id);
-        return propiedad != null ? new ResponseEntity<>(propiedad, HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+    @PostMapping
+    public ResponseEntity<PropiedadDTO> createPropiedad(@RequestBody PropiedadDTO propiedadDTO) {
+        PropiedadDTO createdPropiedadDTO = propiedadService.createPropiedad(propiedadDTO);
+        return ResponseEntity.ok(createdPropiedadDTO);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PropiedadDTO> updatePropiedad(@PathVariable Integer id, @RequestBody PropiedadDTO propiedadDTO) {
-        PropiedadDTO updatedPropiedad = propiedadService.updatePropiedad(propiedadDTO);
-        return updatedPropiedad != null ? new ResponseEntity<>(updatedPropiedad, HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<PropiedadDTO> updatePropiedad(@PathVariable Long id, @RequestBody PropiedadDTO propiedadDTO) {
+        try {
+            PropiedadDTO updatedPropiedadDTO = propiedadService.updatePropiedad(id, propiedadDTO);
+            return ResponseEntity.ok(updatedPropiedadDTO);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deletePropiedad(@PathVariable Integer id) {
-        propiedadService.deletePropiedad(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Void> deletePropiedad(@PathVariable Long id) {
+        try {
+            propiedadService.deletePropiedad(id);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
