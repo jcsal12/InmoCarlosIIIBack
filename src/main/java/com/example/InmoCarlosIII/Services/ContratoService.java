@@ -1,86 +1,85 @@
 package com.example.InmoCarlosIII.Services;
 
-
-import com.example.InmoCarlosIII.DTO.ContratoDTO;
 import com.example.InmoCarlosIII.Entities.Contrato;
 import com.example.InmoCarlosIII.Repositories.ContratoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.InmoCarlosIII.DTO.ContratoDTO;
 
-import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class ContratoService {
 
     @Autowired
     private ContratoRepository contratoRepository;
 
-    public List<ContratoDTO> listarContratos(){
-        return contratoRepository.findAll()
-                .stream()
-                .map(this::convertToDto)
+    public ContratoDTO getContrato(Long id) {
+        Contrato contrato = contratoRepository.findById(id).orElseThrow(() -> new RuntimeException("Contrato no encontrado"));
+        return convertToDTO(contrato);
+    }
+
+    public List<ContratoDTO> getAllContratos() {
+        List<Contrato> contratos = contratoRepository.findAll();
+        return contratos.stream()
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public ContratoDTO listarContratoPorId(Integer id){
-        Contrato contrato = contratoRepository.findById(id).orElse(null);
-        return contrato != null ? convertToDto(contrato) : null;
-    }
 
-    public ContratoDTO crearContrato(ContratoDTO contratoDto){
-        Contrato contrato = convertToEntity(contratoDto);
+    public ContratoDTO createContrato(ContratoDTO contratoDTO) {
+        Contrato contrato = convertToEntity(contratoDTO);
         Contrato savedContrato = contratoRepository.save(contrato);
-        return convertToDto(savedContrato);
+        return convertToDTO(savedContrato);
+    }
+    public ContratoDTO updateContrato(Long id, ContratoDTO contratoDTO) {
+        Contrato contrato = contratoRepository.findById(id).orElseThrow(() -> new RuntimeException("Contrato no encontrado"));
+
+        contrato.setId(contratoDTO.getId());
+        contrato.setTipo(contratoDTO.getTipo());
+        contrato.setFechaInicio(contratoDTO.getFechaInicio());
+        contrato.setFechaFin(contratoDTO.getFechaFin());
+        contrato.setPrecio(contratoDTO.getPrecio());
+        contrato.setDetalles(contratoDTO.getDetalles());
+
+        Contrato savedContrato = contratoRepository.save(contrato);
+        return convertToDTO(savedContrato);
     }
 
-    public void borrarContrato(Integer id){
+    public void deleteContrato(Long id) {
+        if (!contratoRepository.existsById(id)) {
+            throw new RuntimeException("Contrato no encontrado");
+        }
+
         contratoRepository.deleteById(id);
     }
 
-    public Optional<ContratoDTO> actualizarContrato(Integer id, ContratoDTO contratoDto) {
-        Optional<Contrato> contratoExistente = contratoRepository.findById(id);
-        if (contratoExistente.isPresent()) {
-            Contrato contrato = contratoExistente.get();
+    // Conversion methods
 
-            contrato.setTipo(contratoDto.getTipo());
-            contrato.setFechaInicio(contratoDto.getFechaInicio());
-            contrato.setFechaFin(contratoDto.getFechaFin());
-            contrato.setPrecio(contratoDto.getPrecio());
-            contrato.setDetalles(contratoDto.getDetalles());
+    private ContratoDTO convertToDTO(Contrato contrato) {
+        ContratoDTO contratoDTO = new ContratoDTO();
 
-            Contrato contratoActualizado = contratoRepository.save(contrato);
-            return Optional.of(convertToDto(contratoActualizado));
-        } else {
-            return Optional.empty();
-        }
+        contratoDTO.setId(contrato.getId());
+        contratoDTO.setTipo(contrato.getTipo());
+        contratoDTO.setFechaInicio(contrato.getFechaInicio());
+        contratoDTO.setFechaFin(contrato.getFechaFin());
+        contratoDTO.setPrecio(contrato.getPrecio());
+        contratoDTO.setDetalles(contrato.getDetalles());
+
+        return contratoDTO;
     }
 
-    // Utilidad para convertir a DTO
-    private ContratoDTO convertToDto(Contrato contrato) {
-        return new ContratoDTO(
-                contrato.getTipo(),
-                contrato.getFechaInicio(),
-                contrato.getFechaFin(),
-                contrato.getPrecio(),
-                contrato.getDetalles()
-        );
-    }
+    private Contrato convertToEntity(ContratoDTO contratoDTO) {
+        Contrato contrato = new Contrato();
 
-    // Utilidad para convertir a Entidad
-    private Contrato convertToEntity(ContratoDTO contratoDto) {
-        return new Contrato(
-                null,
-                contratoDto.getTipo(),
-                contratoDto.getFechaInicio(),
-                contratoDto.getFechaFin(),
-                contratoDto.getPrecio(),
-                contratoDto.getDetalles(),
-                null, // Aquí necesitarías establecer la propiedad Usuario y Propiedad, si las tienes
-                null  // Aquí necesitarías establecer la propiedad Usuario y Propiedad, si las tienes
-        );
+        contrato.setId(contratoDTO.getId());
+        contrato.setTipo(contratoDTO.getTipo());
+        contrato.setFechaInicio(contratoDTO.getFechaInicio());
+        contrato.setFechaFin(contratoDTO.getFechaFin());
+        contrato.setPrecio(contratoDTO.getPrecio());
+        contrato.setDetalles(contratoDTO.getDetalles());
+
+        return contrato;
     }
 }

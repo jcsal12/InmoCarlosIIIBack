@@ -1,13 +1,12 @@
 package com.example.InmoCarlosIII.Controllers;
 
-import com.example.InmoCarlosIII.DTO.UsuarioDTO;
 import com.example.InmoCarlosIII.Services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.InmoCarlosIII.DTO.UsuarioDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -16,36 +15,47 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping
-    public List<UsuarioDTO> listarUsuarios(){
-        return usuarioService.listarUsuarios();
-    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> listarUsuarioPorId(@PathVariable Integer id){
-        UsuarioDTO usuarioDto = usuarioService.listarUsuarioPorId(id);
-        if (usuarioDto != null) {
-            return ResponseEntity.ok(usuarioDto);
-        } else {
+    public ResponseEntity<UsuarioDTO> getUsuario(@PathVariable Long id) {
+        try {
+            UsuarioDTO usuarioDTO = usuarioService.getUsuario(id);
+            return ResponseEntity.ok(usuarioDTO);
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping
-    public UsuarioDTO crearUsuario(@RequestBody UsuarioDTO usuarioDto){
-        return usuarioService.crearUsuario(usuarioDto);
+    @GetMapping
+    public ResponseEntity<List<UsuarioDTO>> getAllUsuarios() {
+        List<UsuarioDTO> usuarios = usuarioService.getAllUsuarios();
+        return ResponseEntity.ok(usuarios);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> borrarUsuario(@PathVariable Integer id){
-        usuarioService.borrarUsuario(id);
-        return ResponseEntity.noContent().build();
+
+    @PostMapping
+    public ResponseEntity<UsuarioDTO> createUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+        UsuarioDTO createdUsuarioDTO = usuarioService.createUsuario(usuarioDTO);
+        return ResponseEntity.ok(createdUsuarioDTO);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> actualizarUsuario(@PathVariable Integer id, @RequestBody UsuarioDTO usuarioDto) {
-        Optional<UsuarioDTO> usuarioDtoOptional = usuarioService.actualizarUsuario(id, usuarioDto);
-        return usuarioDtoOptional.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<UsuarioDTO> updateUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
+        try {
+            UsuarioDTO updatedUsuarioDTO = usuarioService.updateUsuario(id, usuarioDTO);
+            return ResponseEntity.ok(updatedUsuarioDTO);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUsuario(@PathVariable Long id) {
+        try {
+            usuarioService.deleteUsuario(id);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
