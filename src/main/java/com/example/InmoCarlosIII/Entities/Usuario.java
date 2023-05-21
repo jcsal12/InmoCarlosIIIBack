@@ -1,15 +1,13 @@
 package com.example.InmoCarlosIII.Entities;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
-@Getter @Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "usuarios")

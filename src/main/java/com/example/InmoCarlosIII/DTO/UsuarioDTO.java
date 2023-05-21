@@ -4,7 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.*;
 
-@Getter @Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsuarioDTO {
@@ -15,9 +15,9 @@ public class UsuarioDTO {
 
     private String email;
 
-    private String telefono;
-
     private String clave;
+
+    private String telefono;
 
 
 }

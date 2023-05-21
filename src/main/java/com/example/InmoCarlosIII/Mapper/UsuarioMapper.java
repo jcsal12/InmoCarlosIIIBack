@@ -17,11 +17,4 @@ public interface UsuarioMapper {
    Usuario toEntity(UsuarioDTO usuarioDTO);
    UsuarioDTO toDTO(Usuario usuario);
 
-   default List<UsuarioDTO> toDtoList(List<Usuario> usuarioList){
-       if(usuarioList == null){
-           return new ArrayList<>();
-       }else{
-           return  usuarioList.stream().map(this::toDTO).collect(Collectors.toList());
-       }
-   }
 }
