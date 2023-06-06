@@ -39,6 +39,7 @@ public class UsuarioService {
         usuario.setId(usuarioDTO.getId());
         usuario.setNombre(usuarioDTO.getNombre());
         usuario.setEmail(usuarioDTO.getEmail());
+        usuario.setUsuario(usuarioDTO.getUsuario());
         usuario.setClave(usuarioDTO.getClave());
         usuario.setTelefono(usuarioDTO.getTelefono());
 
@@ -63,6 +64,7 @@ public class UsuarioService {
         usuarioDTO.setId(usuario.getId());
         usuarioDTO.setNombre(usuario.getNombre());
         usuarioDTO.setEmail(usuario.getEmail());
+        usuarioDTO.setUsuario(usuario.getUsuario());
         usuarioDTO.setClave(usuario.getClave());
         usuarioDTO.setTelefono(usuario.getTelefono());
 
@@ -75,6 +77,7 @@ public class UsuarioService {
         usuario.setId(usuarioDTO.getId());
         usuario.setNombre(usuarioDTO.getNombre());
         usuario.setEmail(usuarioDTO.getEmail());
+        usuario.setUsuario(usuarioDTO.getUsuario());
         usuario.setClave(usuarioDTO.getClave());
         usuario.setTelefono(usuarioDTO.getTelefono());
 

@@ -2,6 +2,7 @@ package com.example.InmoCarlosIII.Entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ public class Usuario {
     private  String nombre;
     @Column
     private String email;
+    @Column
+    private String usuario;
     @Column
     private String clave;
     @Column
@@ -56,12 +59,21 @@ public class Usuario {
         this.email = email;
     }
 
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+
     public String getClave() {
         return clave;
     }
 
     public void setClave(String clave) {
-        this.clave = clave;
+
+        this.clave = new BCryptPasswordEncoder().encode(clave);
     }
 
     public String getTelefono() {
