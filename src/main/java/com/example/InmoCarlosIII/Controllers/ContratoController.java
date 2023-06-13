@@ -7,7 +7,7 @@ import com.example.InmoCarlosIII.DTO.ContratoDTO;
 import com.example.InmoCarlosIII.Services.ContratoService;
 
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/contratos")
 public class ContratoController {

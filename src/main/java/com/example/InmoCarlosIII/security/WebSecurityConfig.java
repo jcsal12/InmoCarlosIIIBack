@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,10 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-@RequestMapping("/login")
-@CrossOrigin(origins = "*")
+
+import java.util.Collections;
+
+
+
 @Configuration
 @AllArgsConstructor
+@EnableWebSecurity
 public class WebSecurityConfig {
 
 private final UserDetailsService userDetailsService;
@@ -30,11 +35,12 @@ private final JWTAuthorizationFilter jwtAuthorizationFilter;
         JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter();
         jwtAuthenticationFilter.setAuthenticationManager(authManager);
         jwtAuthenticationFilter.setFilterProcessesUrl("/login");
+        http.cors().configurationSource(corsConfigurationSource());
 
         return http.csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("paciente")
+                .requestMatchers("/api/propiedades", "/api/usuarios")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -59,9 +65,9 @@ private final JWTAuthorizationFilter jwtAuthorizationFilter;
         return new BCryptPasswordEncoder();
     }
 
-    /*public static void main(String[] args){
+    public static void main(String[] args){
         System.out.println(new BCryptPasswordEncoder().encode("admin"));
-    }*/
+    }
 
 
     protected void configure(HttpSecurity http) throws Exception {
@@ -76,6 +82,7 @@ private final JWTAuthorizationFilter jwtAuthorizationFilter;
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
+        config.setAllowCredentials(true);
         source.registerCorsConfiguration("/**", config);
         return source;
     }
