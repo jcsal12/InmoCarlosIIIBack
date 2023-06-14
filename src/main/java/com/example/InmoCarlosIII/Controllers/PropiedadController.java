@@ -58,4 +58,10 @@ public class PropiedadController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/generarDatos/{cantidad}")
+    public String generarDatosFicticios(@PathVariable int cantidad) {
+        propiedadService.generarDatosFicticios(cantidad);
+        return "Datos ficticios generados exitosamente.";
+    }
 }
