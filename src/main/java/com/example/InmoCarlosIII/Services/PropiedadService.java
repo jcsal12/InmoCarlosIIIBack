@@ -3,9 +3,11 @@ package com.example.InmoCarlosIII.Services;
 import com.example.InmoCarlosIII.DTO.PropiedadDTO;
 import com.example.InmoCarlosIII.Entities.Propiedad;
 import com.example.InmoCarlosIII.Repositories.PropiedadRepository;
+import com.github.javafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +16,10 @@ public class PropiedadService {
 
     @Autowired
     private PropiedadRepository propiedadRepository;
+
+    //faker
+    private final Faker faker = new Faker();
+
 
     public PropiedadDTO getPropiedad(Long id) {
         Propiedad propiedad = propiedadRepository.findById(id).orElseThrow(() -> new RuntimeException("Propiedad no encontrada"));
@@ -61,6 +67,32 @@ public class PropiedadService {
     }
 
 
+    //FAKER
+    public void generarDatosFicticios(int cantidad) {
+        List<PropiedadDTO> propiedadesFicticias = new ArrayList<>();
+
+        for (int i = 0; i < cantidad; i++) {
+            PropiedadDTO propiedad = new PropiedadDTO();
+            propiedad.setProvincia(faker.address().state());
+            propiedad.setMunicipio(faker.address().city());
+            propiedad.setDireccion(faker.address().streetAddress());
+            propiedad.setPrecio(faker.number().randomDouble(2, 100000, 1000000));
+            propiedad.setTipo(faker.lorem().word());
+            propiedad.setHabitaciones(String.valueOf(faker.number().numberBetween(1, 6)));
+            propiedad.setBanyos(String.valueOf(faker.number().numberBetween(1, 4)));
+            propiedad.setSuperficie(String.valueOf(faker.number().numberBetween(50, 200)));
+            propiedad.setEstado(faker.lorem().word());
+            propiedad.setImagenes(faker.lorem().sentence());
+            propiedad.setDescripcion(faker.lorem().paragraph());
+
+            propiedadesFicticias.add(propiedad);
+        }
+
+        List<Propiedad> propiedadesGuardadas = propiedadRepository.saveAll(convertToEntityList(propiedadesFicticias));
+        // Puedes realizar otras operaciones con las propiedades guardadas, si es necesario
+    }
+
+
     // Conversion methods
 
     private PropiedadDTO convertToDTO(Propiedad propiedad) {
@@ -100,5 +132,30 @@ public class PropiedadService {
 
         return propiedad;
     }
+    private List<Propiedad> convertToEntityList(List<PropiedadDTO> propiedadDTOList) {
+        List<Propiedad> propiedadList = new ArrayList<>();
+
+        for (PropiedadDTO propiedadDTO : propiedadDTOList) {
+            Propiedad propiedad = new Propiedad();
+
+            propiedad.setId(propiedadDTO.getId());
+            propiedad.setProvincia(propiedadDTO.getProvincia());
+            propiedad.setMunicipio(propiedadDTO.getMunicipio());
+            propiedad.setDireccion(propiedadDTO.getDireccion());
+            propiedad.setPrecio(propiedadDTO.getPrecio());
+            propiedad.setTipo(propiedadDTO.getTipo());
+            propiedad.setHabitaciones(propiedadDTO.getHabitaciones());
+            propiedad.setBanyos(propiedadDTO.getBanyos());
+            propiedad.setSuperficie(propiedadDTO.getSuperficie());
+            propiedad.setEstado(propiedadDTO.getEstado());
+            propiedad.setImagenes(propiedadDTO.getImagenes());
+            propiedad.setDescripcion(propiedadDTO.getDescripcion());
+
+            propiedadList.add(propiedad);
+        }
+
+        return propiedadList;
+    }
+
 }
 
