@@ -19,6 +19,4 @@ public class UserDetailServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("El usuario con user " + usuario + " no ha sido encontrado"));
         return new UserDetailsImpl(usuario1);
     }
-
-
 }
